@@ -35,9 +35,9 @@ curl_args=""
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [ -e $HOME/.googledrive.conf ]
+if [ -e ${DIR}/.googledrive.conf ]
 then
-    . $HOME/.googledrive.conf
+    . ${DIR}/.googledrive.conf
 fi
 
 PROGNAME=${0##*/}
@@ -215,11 +215,11 @@ then
     if [ -z "$ROOT_FOLDER" ] || [ `echo $ROOT_FOLDER | tr [:upper:] [:lower:]` = `echo "root" | tr [:upper:] [:lower:]` ]
     	then
     		ROOT_FOLDER="root"
-    		echo "ROOT_FOLDER=$ROOT_FOLDER" >> $HOME/.googledrive.conf
+    		echo "ROOT_FOLDER=$ROOT_FOLDER" >> ${DIR}/.googledrive.conf
     	else
 		    if expr "$ROOT_FOLDER" : '^[A-Za-z0-9_]\{28\}$' > /dev/null
 		    then
-				echo "ROOT_FOLDER=$ROOT_FOLDER" >> $HOME/.googledrive.conf
+				echo "ROOT_FOLDER=$ROOT_FOLDER" >> ${DIR}/.googledrive.conf
 			else
 				echo "Invalid root folder id"
 				exit -1
@@ -230,13 +230,13 @@ fi
 if [ -z "$CLIENT_ID" ]
 then
     read -p "Client ID: " CLIENT_ID
-    echo "CLIENT_ID=$CLIENT_ID" >> $HOME/.googledrive.conf
+    echo "CLIENT_ID=$CLIENT_ID" >> ${DIR}/.googledrive.conf
 fi
 
 if [ -z "$CLIENT_SECRET" ]
 then
     read -p "Client Secret: " CLIENT_SECRET
-    echo "CLIENT_SECRET=$CLIENT_SECRET" >> $HOME/.googledrive.conf
+    echo "CLIENT_SECRET=$CLIENT_SECRET" >> ${DIR}/.googledrive.conf
 fi
 
 if [ -z "$REFRESH_TOKEN" ]
@@ -254,7 +254,7 @@ then
 	ACCESS_TOKEN=`echo "$RESPONSE" | jsonValue access_token`
 	REFRESH_TOKEN=`echo "$RESPONSE" | jsonValue refresh_token`
 
-    echo "REFRESH_TOKEN=$REFRESH_TOKEN" >> $HOME/.googledrive.conf
+    echo "REFRESH_TOKEN=$REFRESH_TOKEN" >> ${DIR}/.googledrive.conf
 fi
 
 if [ -z "$ACCESS_TOKEN" ]
