@@ -10,27 +10,25 @@
 
 #!/bin/bashset -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CLIENT_ID=""
 CLIENT_SECRET=""
 SCOPE=${SCOPE:-"https://docs.google.com/feeds"}
 
-if [ -e $HOME/.googledrive.conf ]
-then
-    . $HOME/.googledrive.conf
+if [ -e "${DIR}"/googledrive.conf ]; then
+    . "${DIR}"/googledrive.conf
 fi
 
-if [ -z "$CLIENT_ID" ]
-then
+if [ -z "$CLIENT_ID" ]; then
     read -p "Client ID: " CLIENT_ID
     unset token
-    echo "CLIENT_ID=$CLIENT_ID" >> $HOME/.googledrive.conf
+    echo "CLIENT_ID=$CLIENT_ID" >> "${DIR}"/googledrive.conf
 fi
 
-if [ -z "$CLIENT_SECRET" ]
-then
+if [ -z "$CLIENT_SECRET" ]; then
     read -p "Client Secret: " CLIENT_SECRET
     unset token
-    echo "CLIENT_SECRET=$CLIENT_SECRET" >> $HOME/.googledrive.conf
+    echo "CLIENT_SECRET=$CLIENT_SECRET" >> "${DIR}"/googledrive.conf
 fi
 
 # Method to extract data from json response
