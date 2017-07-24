@@ -148,24 +148,18 @@ function createDirectory(){
 
 # Method to upload files to google drive. Requires 3 arguments file path, google folder id and access token.
 function uploadFile(){
-	
-	#FILE=$(echo "$1" | sed "s/'/'\"'\"'/g")
-	FILE="${1}"
-	#CLEAN_FILENAME=$(printf %q "$1")
-	#FILE=${CLEAN_FILENAME};
-	#FILE=$( echo "$@" | sed 's/ /\\ /g' )
+
+	FILE="$1"
 	FOLDER_ID="$2"
 	ACCESS_TOKEN="$3"
-	SLUG=`basename "${FILE}"`
-#	SLUG=`basename -- $(printf %q "$FILE")`
+	SLUG=`basename "$FILE"`
 	FILENAME="${SLUG%.*}"
 	EXTENSION="${SLUG##*.}"
 	if [ "$FILENAME" == "$EXTENSION" ]
    	then
      		MIME_TYPE=`file --brief --mime-type "$FILE"`
    	else
-        	# MIME_TYPE=`mimetype --output-format %m  "$FILE"`
-			MIME_TYPE=`file --brief --mime-type "$FILE"`
+        	MIME_TYPE=`mimetype --output-format %m  "$FILE"`
 
 	fi
 
