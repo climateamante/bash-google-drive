@@ -36,8 +36,8 @@ curl_args=""
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # test: check for googledrive.conf file with client id and secret
-if [ -e "${DIR}"/.googledrive.conf ]; then
-    . "${DIR}"/.googledrive.conf
+if [ -e "${DIR}"/googledrive.conf ]; then
+    . "${DIR}"/googledrive.conf
 fi
 
 PROGNAME=${0##*/}
@@ -49,37 +49,47 @@ HELP=false
 CONFIG=""
 ROOTDIR=""
 
-case $1 in
-
-	"-v" | "--verbose" )
-		VERBOSE=true;
-		curl_args="--progress";
-		shift
-	;;
+while [[ "${#}" -gt 0 ]] && [[ ."${1}" = .-* ]];
+do
+	options="${1}";
 	
-	"-h" | "--help" )
-		usage;
-		shift
-	;;
+    case "${options}" in
+		"-h" | "--help" )
+			usage; shift ;;
+		"-v" | "--verbose" )
+			VERBOSE=true; curl_args="--progress"; shift ;;
+		"-d" | "--debug" )
+			echo "${PROGNAME}"
+			echo $(date); echo '__debug__'; shift ;;
+		"-c" | "--create-dir" )
+			FOLDERNAME="$2"; shift 2 ;;
+		"-r" | "--root-dir" )
+			ROOTDIR="$2"; ROOT_FOLDER="$2";  echo "${ROOT_FOLDER}"; shift 2 ;;
+		"-z" | "--config" )
+			CONFIG="$2"; echo "${CONFIG}"; shift 2 ;;
+		"--" ) shift; break ;;
+		*) 
+		   echo "Invalid option: "${@}" "; break ;;
+   esac
+done
+
+# test: check to see if the config flag was __not__ passed
+if [ ! -z "$CONFIG" ]; then
 	
-* ) echo "${usage}"
-	printf '\n'
-	;;
-esac					
+	if [ -e "$CONFIG" ]; then
+		# import the existing config file if the flag was __not__ passed
+    	. $CONFIG
+	fi
 
+	# test: check to see if the root directory flag was __not__ passed
+	if [ ! -z "$ROOTDIR" ]; then
+		ROOT_FOLDER="$ROOTDIR"
+	fi
 
+fi
+		
 
-# while true; do
-#   case "$1" in
-#     -v | --verbose ) VERBOSE=true;curl_args="--progress"; shift ;;
-#     -h | --help )    usage; shift ;;
-#     -C | --create-dir ) FOLDERNAME="$2"; shift 2 ;;
-#     -r | --root-dir ) ROOTDIR="$2";ROOT_FOLDER="$2"; shift 2 ;;
-#     -z | --config ) CONFIG="$2"; shift 2 ;;
-#     -- ) shift; break ;;
-#     * )  break ;;
-#   esac
-# done
+		
 
 
 # 
