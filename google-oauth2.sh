@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# https://console.developers.google.com/apis
 # A simple cURL OAuth2 authenticator
 #
 # Usage:

@@ -90,7 +90,7 @@ fi
 		
 # test: if no flags are set then the first value is set to the file
 if [ ! -z "$1" ]; then
-	FILE=$1
+	FILE="${1}"
 fi
  
 if [ ! -z "$2" ] && [ -z "$FOLDERNAME" ]; then
@@ -161,6 +161,30 @@ function createDirectory(){
 }
 
 
+function check_file_size () {
+    local file="${1}"
+
+	# linux
+    size=`stat -c%s "${file}" 2>/dev/null`
+    if [ $? -eq 0 ]
+    then
+        echo $size
+        return 0
+    fi
+
+	# macos
+    eval $(stat -s "${file}") 
+    if [ $? -eq 0 ]
+    then
+        echo $st_size
+        return 0
+    fi
+
+    return -1
+}
+
+
+
 # Upload files to google drive.
 # Requires 3 arguments:
 # - File path
@@ -172,19 +196,30 @@ function uploadFile(){
 	FILE="$1"
 	FOLDER_ID="$2"
 	ACCESS_TOKEN="$3"
-	SLUG=`basename "$FILE"`
+	SLUG=`basename "${FILE}"`
 	FILENAME="${SLUG%.*}"
 	EXTENSION="${SLUG##*.}"
-	if [ "$FILENAME" == "$EXTENSION" ]
-   	then
-     		MIME_TYPE=`file --brief --mime-type "$FILE"`
-   	else
-        	MIME_TYPE=`mimetype --output-format %m  "$FILE"`
+	if [ "${FILENAME}" == "$EXTENSION" ]; then
+   	# then
+     		MIME_TYPE=`file --brief --mime-type "${FILE}"`
+   	# else
+	
+#		MIME_TYPE="text/plain"
+        # debug: error on mime type
+		#MIME_TYPE=`mimetype --output-format %m  "$FILE"
+		# MIME_TYPE=`file --brief --mime-type "$FILE"``
 
+		# debug: testing awk for mime file type 
+		#find "${FILE}" | file -if- | grep $2 | awk -F: '{print $1}'
+		#file --brief --mime-type test-file.txt
+		
+		echo 'error: mime-type not found'
+		#MIME_TYPE=`file --brief --mime "$FILE"`
+ 	
 	fi
 
 
-	FILESIZE=$(stat -c%s "$FILE")
+	FILESIZE=$(check_file_size "${FILE}")
 
 	# JSON post data to specify the file name and folder under while the file to be created
 	postData="{\"mimeType\": \"$MIME_TYPE\",\"title\": \"$SLUG\",\"parents\": [{\"id\": \"$FOLDER_ID\"}]}"
