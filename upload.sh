@@ -193,13 +193,13 @@ function check_file_size () {
 
 function uploadFile(){
 
-	FILE="$1"
-	FOLDER_ID="$2"
-	ACCESS_TOKEN="$3"
+	FILE="${1}"
+	FOLDER_ID="${2}"
+	ACCESS_TOKEN="${3}"
 	SLUG=`basename "${FILE}"`
 	FILENAME="${SLUG%.*}"
 	EXTENSION="${SLUG##*.}"
-	if [ "${FILENAME}" == "$EXTENSION" ]; then
+	if [ "${FILENAME}" == "${EXTENSION}" ]; then
    	# then
      		MIME_TYPE=`file --brief --mime-type "${FILE}"`
    	# else
@@ -253,6 +253,8 @@ function uploadFile(){
 	--output /dev/null \
 	"$uploadlink" \
 	$curl_args
+
+
 }
 
 old_umask=`umask`
